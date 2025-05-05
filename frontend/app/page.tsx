@@ -32,9 +32,10 @@ export default function Home() {
             </div>
             <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
               <Image
-                src="/placeholder.svg?height=600&width=800"
+                src="/hero-img.jpg"
+                width={800}
+                height={800}
                 alt="Creative content showcase"
-                fill
                 className="object-cover"
               />
             </div>

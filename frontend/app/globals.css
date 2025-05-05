@@ -47,4 +47,9 @@
   }
 }
 
-
+.audio-button {
+  transition: all 0.2s ease;
+}
+.audio-button:hover {
+  transform: scale(1.1);
+}
