@@ -53,7 +53,7 @@ export default function Home() {
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Join our community of creators and get the exposure your work deserves.
           </p>
-          <Link href="/signup">
+          <Link href="/login">
             <Button className="bg-white text-gray-800 hover:bg-gray-100">Sign Up Now</Button>
           </Link>
         </div>
