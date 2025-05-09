@@ -42,11 +42,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Content Section */}
       <FeaturedContent />
 
       {/* Community Section - call to action*/}
-
       <section className="bg-gray-800 text-white py-16">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Showcase Your Talent?</h2>

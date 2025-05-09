@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { WalletConnection } from "@/components/wallet-connection"
+import WalletConnect from "@/components/wallet-connection"
 
 export default function LoginPage() {
   const [isConnected, setIsConnected] = useState(false)
@@ -79,12 +79,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <WalletConnection
-                  onConnect={(address) => {
-                    setIsConnected(true)
-                    setWalletAddress(address)
-                    localStorage.setItem("walletAddress", address)
-                  }}
+                <WalletConnect                  
                 />
 
                 <p className="text-xs text-center text-gray-500 mt-2">

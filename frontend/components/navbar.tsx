@@ -1,57 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, User } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
-  const [walletAddress, setWalletAddress] = useState("")
-
-  useEffect(() => {
-    // Check if wallet is connected on component mount
-    const savedWallet = localStorage.getItem("walletAddress")
-    if (savedWallet) {
-      setIsConnected(true)
-      setWalletAddress(savedWallet)
-    }
-
-    // Listen for wallet connection changes
-    const checkWalletConnection = () => {
-      const savedWallet = localStorage.getItem("walletAddress")
-      setIsConnected(!!savedWallet)
-      setWalletAddress(savedWallet || "")
-    }
-
-    window.addEventListener("storage", checkWalletConnection)
-
-    return () => {
-      window.removeEventListener("storage", checkWalletConnection)
-    }
-  }, [])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
-  }
-
-  const handleDisconnect = () => {
-    localStorage.removeItem("walletAddress")
-    setIsConnected(false)
-    setWalletAddress("")
-  }
-
-  const truncateAddress = (address: string) => {
-    if (!address) return ""
-    return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 
   return (
@@ -69,8 +27,11 @@ const Navbar = () => {
             <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
               Home
             </Link>
+            <Link href="/challenges" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              Challenges
+            </Link>
             <Link href="/explore" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-              Explore
+              Vote
             </Link>
             <Link href="/upload" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
               Upload
@@ -79,32 +40,9 @@ const Navbar = () => {
               Leaderboard
             </Link>
 
-            {isConnected ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>{truncateAddress(walletAddress)}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleDisconnect} className="cursor-pointer">
-                    Disconnect
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link href="/login">
-                <Button className="bg-gray-800 text-white hover:bg-gray-700">Connect Wallet</Button>
-              </Link>
-            )}
+            <Link href="/login">
+              <Button className="bg-gray-800 text-white hover:bg-gray-700">Connect Wallet</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -139,11 +77,18 @@ const Navbar = () => {
               Home
             </Link>
             <Link
+              href="/challenges"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              Challenges
+            </Link>
+            <Link
               href="/explore"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               onClick={toggleMenu}
             >
-              Explore
+              Vote
             </Link>
             <Link
               href="/upload"
@@ -160,40 +105,15 @@ const Navbar = () => {
               Leaderboard
             </Link>
 
-            {isConnected ? (
-              <div className="px-3 py-2">
-                <div className="flex items-center gap-2 text-sm font-medium mb-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span>{truncateAddress(walletAddress)}</span>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <Link
-                    href="/profile"
-                    className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                    onClick={toggleMenu}
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleDisconnect()
-                      toggleMenu()
-                    }}
-                    className="block px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 text-left"
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              </div>
-            ) : (
+            <div className="px-3 py-2">
               <Link
                 href="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium bg-gray-800 text-white hover:bg-gray-700"
+                className="block px-3 py-2 rounded-md text-base font-medium bg-gray-800 text-white hover:bg-gray-700 text-center"
                 onClick={toggleMenu}
               >
                 Connect Wallet
               </Link>
-            )}
+            </div>
           </div>
         </div>
       )}
