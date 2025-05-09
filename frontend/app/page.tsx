@@ -2,7 +2,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import FeaturedContent from "@/components/featured-content"
-import HowItWorks from "@/components/how-it-works"
 
 export default function Home() {
   return (
@@ -21,7 +20,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/explore">
-                  <Button className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white">Explore Content</Button>
+                  <Button className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white">Vote Your Favorites</Button>
                 </Link>
                 <Link href="/upload">
                   <Button variant="outline" className="w-full sm:w-auto">
@@ -43,20 +42,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Content Section */}
       <FeaturedContent />
 
-      {/* How It Works Section */}
-      <HowItWorks />
-
-      {/* Call to Action */}
+      {/* Community Section - call to action*/}
       <section className="bg-gray-800 text-white py-16">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Showcase Your Talent?</h2>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Join our community of creators and get the exposure your work deserves.
           </p>
-          <Link href="/signup">
+          <Link href="/login">
             <Button className="bg-white text-gray-800 hover:bg-gray-100">Sign Up Now</Button>
           </Link>
         </div>

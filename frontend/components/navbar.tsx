@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -26,8 +27,11 @@ const Navbar = () => {
             <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
               Home
             </Link>
+            <Link href="/challenges" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              Challenges
+            </Link>
             <Link href="/explore" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-              Explore
+              Vote
             </Link>
             <Link href="/upload" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
               Upload
@@ -35,11 +39,9 @@ const Navbar = () => {
             <Link href="/leaderboard" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
               Leaderboard
             </Link>
-            <Link
-              href="/login"
-              className="bg-gray-800 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium"
-            >
-              Login
+
+            <Link href="/login">
+              <Button className="bg-gray-800 text-white hover:bg-gray-700">Connect Wallet</Button>
             </Link>
           </div>
 
@@ -75,11 +77,18 @@ const Navbar = () => {
               Home
             </Link>
             <Link
+              href="/challenges"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              Challenges
+            </Link>
+            <Link
               href="/explore"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               onClick={toggleMenu}
             >
-              Explore
+              Vote
             </Link>
             <Link
               href="/upload"
@@ -95,13 +104,16 @@ const Navbar = () => {
             >
               Leaderboard
             </Link>
-            <Link
-              href="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium bg-gray-800 text-white hover:bg-gray-700"
-              onClick={toggleMenu}
-            >
-              Login
-            </Link>
+
+            <div className="px-3 py-2">
+              <Link
+                href="/login"
+                className="block px-3 py-2 rounded-md text-base font-medium bg-gray-800 text-white hover:bg-gray-700 text-center"
+                onClick={toggleMenu}
+              >
+                Connect Wallet
+              </Link>
+            </div>
           </div>
         </div>
       )}

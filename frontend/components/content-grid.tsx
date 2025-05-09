@@ -9,7 +9,7 @@ const allContent = [
     title: "Summer Vibes",
     creator: "Alex Johnson",
     type: "music",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 245,
   },
   {
@@ -17,7 +17,7 @@ const allContent = [
     title: "Urban Landscapes",
     creator: "Maria Garcia",
     type: "photography",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 189,
   },
   {
@@ -25,7 +25,7 @@ const allContent = [
     title: "Digital Dreams",
     creator: "Jamal Wilson",
     type: "art",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 312,
   },
   {
@@ -33,7 +33,7 @@ const allContent = [
     title: "City Life",
     creator: "Sarah Chen",
     type: "video",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 276,
   },
   {
@@ -41,7 +41,7 @@ const allContent = [
     title: "Midnight Jazz",
     creator: "David Lee",
     type: "music",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 198,
   },
   {
@@ -49,7 +49,7 @@ const allContent = [
     title: "Nature's Beauty",
     creator: "Emma White",
     type: "photography",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 221,
   },
   {
@@ -57,7 +57,7 @@ const allContent = [
     title: "Abstract Thoughts",
     creator: "Michael Brown",
     type: "art",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 167,
   },
   {
@@ -65,7 +65,7 @@ const allContent = [
     title: "Street Stories",
     creator: "James Taylor",
     type: "video",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/nature.jpg",
     votes: 234,
   },
 ]

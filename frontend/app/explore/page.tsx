@@ -4,7 +4,7 @@ import ContentGrid from "@/components/content-grid"
 export default function ExplorePage() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      <h1 className="text-3xl font-bold mb-8">Explore Content</h1>
+      <h1 className="text-3xl font-bold mb-8">Vote For Your Favorites</h1>
 
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-4 md:grid-cols-5 h-auto">
