@@ -2,6 +2,8 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "dotenv/config";
 
+console.log("INFURA_PROJECT_ID", process.env.INFURA_PROJECT_ID);
+
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.28",
@@ -19,6 +21,7 @@ const config: HardhatUserConfig = {
     },
     sepolia: {
       url: `https://api.developer.coinbase.com/rpc/v1/base-sepolia/${process.env.INFURA_PROJECT_ID}`,
+      //url: `https://api.developer.coinbase.com/rpc/v1/base-sepolia/Gi0G8WIs9hXo69AZ7hBLabbRcObpPqib`,
       accounts: [process.env.PRIVATE_KEY || ""],
     },
   },
