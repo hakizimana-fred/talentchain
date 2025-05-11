@@ -1,9 +1,13 @@
+"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import FeaturedContent from "@/components/featured-content"
 
+
+
 export default function Home() {
+   
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
