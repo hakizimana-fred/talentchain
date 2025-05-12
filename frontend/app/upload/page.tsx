@@ -1,8 +1,14 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import React, { useState, useEffect } from "react"
+import { useAccount, useWalletClient, } from 'wagmi';
+import { Contract, ethers } from 'ethers';
+import { talentChainAbi } from "../constants/ABI"
+import { CONTRACT_ADDRESS } from "../constants"
 
 // Mock data for challenges
 const challenges = [
@@ -33,6 +39,59 @@ const challenges = [
 ]
 
 export default function UploadPage() {
+  const [challenge, setChallenge] = React.useState({name: '', description: '', url: '', entryFee: 0, endDate: ''});
+
+  const handleChallengeChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setChallenge({...challenge, [event.target.name]: event.target.value});
+  }
+
+
+
+
+
+  async function getContract() {
+    if (typeof window.ethereum === "undefined") {
+      throw new Error("MetaMask is not installed");
+    }
+  
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+  
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, talentChainAbi, signer);
+  
+    return contract;
+  }
+
+  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+     
+    event.preventDefault();
+    // const formData = new FormData(event.currentTarget);
+    // const selectedChallengeId = formData.get("challenge");
+    // const title = formData.get("title");
+    // const description = formData.get("description");
+    // const file = formData.get("file");
+
+    // Handle the submission logic here
+    // if (!challenge.name || !challenge.description || !challenge.url) {
+    //   alert("Please fill in all fields");
+    //   return;
+    // }
+    //console.log("Challenge submitted:", challenge, 'by', address);
+
+    try {
+    const contract = await getContract();
+     const tx = await contract.createCompetition("Name", "Description", "https://photo.url");
+    await tx.wait(); // Wait for it to be mined
+    console.log("Competition created!");
+    }catch(e)  {
+      console.error("Error creating competition:", e);
+    }
+  }
+
+  const {name, description, url } = challenge
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <h1 className="text-3xl font-bold mb-8">Upload Your Content</h1>
@@ -40,7 +99,7 @@ export default function UploadPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
           <Card>
-            <form>
+            <form onSubmit={handleSubmit}>
               <CardHeader>
                 <CardTitle>Content Details</CardTitle>
                 <CardDescription>Fill in the details about your content and upload your file.</CardDescription>
@@ -63,17 +122,21 @@ export default function UploadPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
-                  <Input id="title" placeholder="Enter a title for your content" />
+                  <Input name="name" value={name} onChange={handleChallengeChange} id="name" placeholder="Enter a title for your content" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
-                  <Textarea id="description" placeholder="Describe your content" rows={4} />
+                  <Textarea name="description" onChange={handleChallengeChange} value={description} id="description" placeholder="Describe your content" rows={4} />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="file">Upload File</Label>
                   <Input id="file" type="file" />
+                </div> */}
+                 <div className="space-y-2">
+                  <Label htmlFor="url">URL</Label>
+                  <Input name="url" value={url} onChange={handleChallengeChange} id="title" placeholder="Enter a title for your content" />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
