@@ -194,4 +194,5 @@ contract TalentChain {
         competition.voters[msg.sender] = true;
         emit VoteCast(competitionId, msg.sender, candidate);
     }
+
 }
