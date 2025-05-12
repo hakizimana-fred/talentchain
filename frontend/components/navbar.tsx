@@ -1,15 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  useConnectModal,
+  useAccountModal,
+  useChainModal,
+} from "@rainbow-me/rainbowkit"
+import { useAccount, useDisconnect } from "wagmi"
+import { emojiAvatarForAddress } from "@/lib/emojiAvatarForAddress"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const isMounted = useRef(false)
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+
+  const { isConnecting, address, isConnected, chain } = useAccount()
+  const { openConnectModal } = useConnectModal()
+  const { openAccountModal } = useAccountModal()
+  const { openChainModal } = useChainModal()
+  const { disconnect } = useDisconnect()
+
+  const { emoji, color: backgroundColor } = emojiAvatarForAddress(address ?? "")
+
+  useEffect(() => {
+    isMounted.current = true
+  }, [])
+
+  const handleConnectClick = async () => {
+    if (isConnected) disconnect()
+    openConnectModal?.()
   }
 
   return (
@@ -40,9 +63,29 @@ const Navbar = () => {
               Leaderboard
             </Link>
 
-            <Link href="/login">
-              <Button className="bg-gray-800 text-white hover:bg-gray-700">Connect Wallet</Button>
-            </Link>
+            {isConnected ? (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={openAccountModal}
+                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200"
+                >
+                  <span
+                    className="h-6 w-6 rounded-full flex items-center justify-center text-lg"
+                    style={{ backgroundColor, marginRight: '8px' }}
+                  >
+                    {emoji}
+                  </span>
+                  Account
+                </button>
+                <Button onClick={openChainModal}>
+                  {chain?.name ?? 'Wrong Network'}
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={handleConnectClick} disabled={isConnecting}>
+                {isConnecting ? "Connecting..." : "Connect Wallet"}
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -51,7 +94,7 @@ const Navbar = () => {
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500"
               aria-controls="mobile-menu"
-              aria-expanded="false"
+              aria-expanded={isMenuOpen}
               onClick={toggleMenu}
             >
               <span className="sr-only">Open main menu</span>
@@ -65,54 +108,31 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu, show/hide based on menu state */}
+      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="sm:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              href="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              onClick={toggleMenu}
-            >
-              Home
-            </Link>
-            <Link
-              href="/challenges"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              onClick={toggleMenu}
-            >
-              Challenges
-            </Link>
-            <Link
-              href="/explore"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              onClick={toggleMenu}
-            >
-              Vote
-            </Link>
-            <Link
-              href="/upload"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              onClick={toggleMenu}
-            >
-              Upload
-            </Link>
-            <Link
-              href="/leaderboard"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              onClick={toggleMenu}
-            >
-              Leaderboard
-            </Link>
-
-            <div className="px-3 py-2">
+            {["Home", "Challenges", "Vote", "Upload", "Leaderboard"].map((label) => (
               <Link
-                href="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium bg-gray-800 text-white hover:bg-gray-700 text-center"
+                key={label}
+                href={`/${label.toLowerCase() === "home" ? "" : label.toLowerCase()}`}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 onClick={toggleMenu}
               >
-                Connect Wallet
+                {label}
               </Link>
+            ))}
+
+            <div className="px-3 py-2">
+              <Button
+                className="w-full"
+                onClick={() => {
+                  toggleMenu()
+                  handleConnectClick()
+                }}
+              >
+                {isConnected ? "Connected" : "Connect Wallet"}
+              </Button>
             </div>
           </div>
         </div>

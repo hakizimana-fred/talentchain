@@ -9,7 +9,7 @@ const projectId: string = "7b95509d00bf9fde30ea37df8c3709bd";
 const supportedChains: Chain[] = [sepolia, bscTestnet, blastSepolia];
 
 export const config = getDefaultConfig({
-   appName: "TallentCahin",
+   appName: "TalentChain",
    projectId,
    chains: supportedChains as any, 
    ssr: true,

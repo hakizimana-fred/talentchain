@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import '@rainbow-me/rainbowkit/styles.css';
 import "./globals.css"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
@@ -25,15 +26,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                <Providers cookie={cookie}>
-                  {children}
-                </Providers>
-              </main>
-              <Footer />
-            </div>
+        <Providers cookie={cookie}>
+          <div className="flex flex-col min-h-screen">
+            <Navbar /> {/* ✅ Now inside the WagmiProvider */}
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   )
