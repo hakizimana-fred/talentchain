@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import React, { useState, useEffect } from "react"
-import { useAccount, useWalletClient, } from 'wagmi';
+
 import { Contract, ethers } from 'ethers';
 import { talentChainAbi } from "../constants/ABI"
 import { CONTRACT_ADDRESS } from "../constants"
@@ -38,8 +38,16 @@ const challenges = [
   },
 ]
 
+interface IProps  {
+  name: string
+  description: string
+  url: string,
+  entryFee: number
+  endDate: string
+}
+
 export default function UploadPage() {
-  const [challenge, setChallenge] = React.useState({name: '', description: '', url: '', entryFee: 0, endDate: ''});
+  const [challenge, setChallenge] = React.useState<IProps>({name: '', description: '', url: '', entryFee: 0, endDate: ''});
 
   const handleChallengeChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setChallenge({...challenge, [event.target.name]: event.target.value});
@@ -64,6 +72,8 @@ export default function UploadPage() {
     return contract;
   }
 
+  const {name, description, url } = challenge
+
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
      
     event.preventDefault();
@@ -74,23 +84,22 @@ export default function UploadPage() {
     // const file = formData.get("file");
 
     // Handle the submission logic here
-    // if (!challenge.name || !challenge.description || !challenge.url) {
-    //   alert("Please fill in all fields");
-    //   return;
-    // }
-    //console.log("Challenge submitted:", challenge, 'by', address);
+    if (!challenge.name || !challenge.description || !challenge.url) {
+      alert("Please fill in all fields");
+      return;
+    }
 
     try {
     const contract = await getContract();
-     const tx = await contract.createCompetition("Name", "Description", "https://photo.url");
+    const tx = await contract.createCompetition(name, description, url);
     await tx.wait(); // Wait for it to be mined
-    console.log("Competition created!");
+    alert("Competition created!");
+    setChallenge({})
     }catch(e)  {
       console.error("Error creating competition:", e);
     }
   }
 
-  const {name, description, url } = challenge
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -136,7 +145,7 @@ export default function UploadPage() {
                 </div> */}
                  <div className="space-y-2">
                   <Label htmlFor="url">URL</Label>
-                  <Input name="url" value={url} onChange={handleChallengeChange} id="title" placeholder="Enter a title for your content" />
+                  <Input name="url" value={url} onChange={handleChallengeChange} id="title" placeholder="Enter URL for your content" />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">

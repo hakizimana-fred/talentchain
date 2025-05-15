@@ -1,8 +1,13 @@
+"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState } from "react"
+import { CONTRACT_ADDRESS } from "@/app/constants"
+import { talentChainAbi } from "@/app/constants/ABI"
+import { ethers } from "ethers"
 
 // Mock data for challenges
 const challengesData = {
@@ -126,6 +131,7 @@ const submissionsData = {
 }
 
 export default function ChallengePage({ params }: { params: { id: string } }) {
+  const [competition, setCompetition] = useState<any>({})
   // Get challenge data
   const challenge = challengesData[params.id as keyof typeof challengesData] || {
     id: params.id,
@@ -140,6 +146,34 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
     endDate: "December 31, 2023",
     timeLeft: "Unknown",
   }
+
+
+   async function getContract() {
+    if (typeof window.ethereum === "undefined") {
+      throw new Error("MetaMask is not installed");
+    }
+  
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+  
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, talentChainAbi, signer);
+  
+    return contract;
+}
+
+
+  useEffect(() => {
+    async function fetchChallenge() {
+      const contract = await getContract();
+      const competition = await contract.getCompetitionDetails(params.id);
+      console.log(competition, 'competition' )
+      setCompetition(competition)
+    }
+  
+    fetchChallenge();
+  }, [])
 
   // Get submissions
   const submissions = submissionsData[params.id as keyof typeof submissionsData] || []
@@ -165,15 +199,15 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="relative h-64 md:h-96 rounded-lg overflow-hidden mb-6">
-            <Image src={challenge.image || "/placeholder.svg"} alt={challenge.title} fill className="object-cover" />
+            <img src={competition?.photoUrl || "/placeholder.svg"} alt={competition?.name}  className="object-cover" />
             <div className="absolute top-4 right-4">
-              <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">{challenge.category}</span>
+              <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">{competition?.name}</span>
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold mb-4">{challenge.title}</h1>
+          <h1 className="text-3xl font-bold mb-4">{competition?.name}</h1>
 
-          <div className="flex flex-wrap gap-4 mb-6">
+          {/* <div className="flex flex-wrap gap-4 mb-6">
             <div className="flex items-center text-gray-600">
               <span>
                 {challenge.startDate} - {challenge.endDate}
@@ -185,11 +219,11 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
             <div className="flex items-center text-gray-600">
               <span>{challenge.participants} Participants</span>
             </div>
-          </div>
+          </div> */}
 
           <div className="prose max-w-none mb-8">
-            <h2 className="text-xl font-semibold mb-2">Challenge Description</h2>
-            <p className="text-gray-700 whitespace-pre-line">{challenge.description}</p>
+            {/* <h2 className="text-xl font-semibold mb-2">Challenge Description</h2> */}
+            <p className="text-gray-700 whitespace-pre-line">{competition?.description}</p>
           </div>
 
           <div className="flex justify-center mb-8">

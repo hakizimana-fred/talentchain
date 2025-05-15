@@ -1,7 +1,12 @@
+"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { ethers } from "ethers"
+import { CONTRACT_ADDRESS } from "../constants"
+import { talentChainAbi } from "../constants/ABI"
+import { useEffect, useState } from "react"
 
 // Mock data for challenges
 const challenges = [
@@ -43,7 +48,40 @@ const challenges = [
   },
 ]
 
+
+
 export default function ChallengesPage() {
+  const [competitions, setCompetitions] = useState([]);
+
+    async function getContract() {
+    if (typeof window.ethereum === "undefined") {
+      throw new Error("MetaMask is not installed");
+    }
+  
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+  
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, talentChainAbi, signer);
+  
+    return contract;
+}
+
+
+  useEffect(() => {
+  async function fetchChallenges() {
+    const contract = await getContract();
+    console.log(contract, 'contract');
+    const competitions = await contract.getAllCompetitions();
+    console.log(competitions, )
+    setCompetitions(competitions)
+  }
+
+  fetchChallenges();
+}, [])
+
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <h1 className="text-3xl font-bold mb-8">Challenges</h1>
@@ -56,39 +94,47 @@ export default function ChallengesPage() {
           <TabsTrigger value="video">Video</TabsTrigger>
           <TabsTrigger value="art">Art</TabsTrigger>
         </TabsList>
-
+        {/* {competitions && competitions.map((competition: any) => (
+          // eslint-disable-next-line react/jsx-key
+          <div>
+            <h2>{competition.description}</h2>
+          </div>
+        ))} */}
         <TabsContent value="all" className="mt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {challenges.map((challenge) => (
+            {competitions.map((challenge: any) => {
+              console.log(challenge, 'challenge')
+              return (
               <div
                 key={challenge.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col"
               >
                 <div className="relative h-48">
-                  <Image
-                    src={challenge.image || "/placeholder.svg"}
-                    alt={challenge.title}
-                    fill
+                  <img
+                    src={challenge?.photoUrl || "https://placehold.co/600x400/EEE/31343C"}
+                    alt={challenge.name}
+                    //fill
                     className="object-cover"
                   />
                   <div className="absolute top-2 right-2">
-                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full capitalize">
+                    {/* <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full capitalize">
                       {challenge.category}
-                    </span>
+                    </span> */}
+
                   </div>
                 </div>
                 <div className="p-4 flex-grow">
-                  <h3 className="font-semibold text-lg mb-2">{challenge.title}</h3>
+                  <h3 className="font-semibold text-lg mb-2">{challenge.name}</h3>
                   <p className="text-gray-600 text-sm line-clamp-3 mb-4">{challenge.description}</p>
 
-                  <div className="space-y-2 text-sm">
+                  {/* <div className="space-y-2 text-sm">
                     <div className="flex items-center text-gray-500">
                       <span>Entry Fee: ${challenge.entryFee.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center text-gray-500">
                       <span>{challenge.participants} Participants</span>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="p-4 pt-0">
                   <Link href={`/challenges/${challenge.id}`}>
@@ -96,7 +142,8 @@ export default function ChallengesPage() {
                   </Link>
                 </div>
               </div>
-            ))}
+              )
+})}
           </div>
         </TabsContent>
 
@@ -131,67 +178,9 @@ export default function ChallengesPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="photography" className="mt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {challenges
-              .filter((c) => c.category === "photography")
-              .map((challenge) => (
-                <div
-                  key={challenge.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col"
-                >
-                  <div className="relative h-48">
-                    <Image
-                      src={challenge.image || "/placeholder.svg"}
-                      alt={challenge.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4 flex-grow">
-                    <h3 className="font-semibold text-lg mb-2">{challenge.title}</h3>
-                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">{challenge.description}</p>
-                  </div>
-                  <div className="p-4 pt-0">
-                    <Link href={`/challenges/${challenge.id}`}>
-                      <Button className="w-full">View Challenge</Button>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </TabsContent>
+  
 
-        <TabsContent value="video" className="mt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {challenges
-              .filter((c) => c.category === "video")
-              .map((challenge) => (
-                <div
-                  key={challenge.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col"
-                >
-                  <div className="relative h-48">
-                    <Image
-                      src={challenge.image || "/placeholder.svg"}
-                      alt={challenge.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4 flex-grow">
-                    <h3 className="font-semibold text-lg mb-2">{challenge.title}</h3>
-                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">{challenge.description}</p>
-                  </div>
-                  <div className="p-4 pt-0">
-                    <Link href={`/challenges/${challenge.id}`}>
-                      <Button className="w-full">View Challenge</Button>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </TabsContent>
+      
 
         <TabsContent value="art" className="mt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
